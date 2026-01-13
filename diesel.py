@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from config import file_path_diesel
+from config import file_path_diesel, file_path_electric
 
 def import_excel_data(file_path_diesel):
     """
@@ -33,6 +33,28 @@ data['AVG'] = data[['TR1', 'TR2', 'TR3', 'TR4']].mean(axis=1)
 # Print the standard deviation and average for each MPH value
 for index, row in data.iterrows():
     print(f"MPH: {row['MPH']}, Standard Deviation: {row['STD_DEV']}, Average: {row['AVG']}")
+
+# # Compute per-row (across indices) z-scores to detect which index is most deviant at each MPH
+# idx_cols = ['INDEX_TR1', 'INDEX_TR2', 'INDEX_TR3', 'INDEX_TR4']
+# row_mean = data[idx_cols].mean(axis=1)
+# row_std = data[idx_cols].std(axis=1, ddof=0).replace(0, np.nan)  # avoid division by zero
+# zs = (data[idx_cols].subtract(row_mean, axis=0)).divide(row_std, axis=0)
+# zs.columns = [f'Z_{c.split("_")[-1]}' for c in idx_cols]  # Z_TR1, Z_TR2, Z_TR3, Z_TR4
+
+# data = pd.concat([data, zs], axis=1)
+
+# # For convenience: absolute max z and which column has it
+# abs_zs = zs.abs()
+# data['MAX_ABS_Z'] = abs_zs.max(axis=1)
+# data['Z_OUTLIER_INDEX'] = abs_zs.idxmax(axis=1).str.replace('Z_', 'INDEX_')
+
+# # Flag rows where the maximum absolute z exceeds threshold (outlier detection)
+# Z_THRESHOLD = 2  # change as needed: 2=moderate, 3=strict
+# data['OUTLIER_FLAG'] = data['MAX_ABS_Z'] > Z_THRESHOLD
+
+# # Small summary print
+# print(f"Number of outlier MPH rows (|z| > {Z_THRESHOLD}):", data['OUTLIER_FLAG'].sum())
+# print(data.loc[data['OUTLIER_FLAG'], ['MPH', 'MAX_ABS_Z', 'Z_OUTLIER_INDEX']])
 
 # Calculate the absolute differences (deltas) between the traction indices
 # for different pairs of indices
@@ -120,6 +142,7 @@ data['MAX_DELTA'] = pd.concat([delta_1_2, delta_1_3, delta_1_4, delta_2_3, delta
 # plt.grid(True)  # Add grid for better readability
 # plt.show()
 
+
 # Set figure size for a 3.5 inch screen and adjust font/marker sizes
 fig, axes = plt.subplots(2, 2, figsize=(3.5, 2.5), gridspec_kw={'height_ratios': [1, 0.5], 'hspace': 0.4, 'wspace': 0.3})
 
@@ -163,3 +186,43 @@ plt.subplots_adjust(left=0.15, right=0.95, top=0.95, bottom=0.15, hspace=0.5, ws
 
 # Show the figure
 plt.show()
+
+
+
+# Z-score analysis for outlier detection
+
+# ensure numeric and compute mean across those 4 columns (rows)
+# data['Avg_TR'] = data[['TR1','TR2','TR3','TR4']].mean(axis=1)
+# print(data['Avg_TR'])
+
+# average = data[['AVE']]
+# print(average)
+# stdev = data[['STD_DEV']]
+# print(stdev)
+
+# row_mean_avg = average.mean()
+
+# row_mean_avg = data['Avg_TR'].mean()
+# print(row_mean_avg)
+# row_std_avg = data['Avg_TR'].std(ddof=0)
+# print(row_std_avg)
+# data['Z_Avg_TR'] = (data['Avg_TR'] - row_mean_avg) / row_std_avg
+# print(data['Z_Avg_TR'])
+
+data['Z_Avg_TR'] = (data['TR1'] - data['AVE']) / data['STD_DEV']
+print(data['Z_Avg_TR'])
+
+# # Plot a small summary of per-row max |z| vs MPH and highlight outliers
+plt.figure(figsize=(3.5, 2.5))
+plt.plot(data['MPH'], data['INDEX_TR1'], label='INDEX_TR1', linestyle='-', marker='o', markersize=3, linewidth=1)
+plt.plot(data['MPH'], data['INDEX_TR2'], label='INDEX_TR2', linestyle='-', marker='s', markersize=3, linewidth=1)
+plt.plot(data['MPH'], data['INDEX_TR3'], label='INDEX_TR3', linestyle='-', marker='^', markersize=3, linewidth=1)
+plt.plot(data['MPH'], data['INDEX_TR4'], label='INDEX_TR4', linestyle='-', marker='v', markersize=3, linewidth=1)
+plt.plot(data['MPH'], data['Z_Avg_TR'], label='Z_Avg_TR', linestyle='-', marker='o', markersize=3, linewidth=1)
+plt.legend()
+plt.xlabel('mph (index)' if data.index.dtype.kind in 'fiu' else 'Index')
+plt.ylabel('Value / Z-score (shifted)')
+plt.title('INDEX_TR1-4 and Z_Avg_TR')
+plt.grid(True)
+plt.show()
+
