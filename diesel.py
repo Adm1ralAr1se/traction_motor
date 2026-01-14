@@ -187,42 +187,71 @@ plt.subplots_adjust(left=0.15, right=0.95, top=0.95, bottom=0.15, hspace=0.5, ws
 # Show the figure
 plt.show()
 
+# Calculate z-score for TR1
+data['Z1_Avg_TR'] = (data['TR1'] - data['AVE']) / data['STD_DEV']
+print(data['Z1_Avg_TR'])
+# Calculate z-score for TR2
+data['Z2_Avg_TR'] = (data['TR2'] - data['AVE']) / data['STD_DEV']
+print(data['Z2_Avg_TR'])
+# Calculate z-score for TR3
+data['Z3_Avg_TR'] = (data['TR3'] - data['AVE']) / data['STD_DEV']
+print(data['Z3_Avg_TR'])
+# Calculate z-score for TR4
+data['Z4_Avg_TR'] = (data['TR4'] - data['AVE']) / data['STD_DEV']
+print(data['Z4_Avg_TR'])
 
-
-# Z-score analysis for outlier detection
-
-# ensure numeric and compute mean across those 4 columns (rows)
-# data['Avg_TR'] = data[['TR1','TR2','TR3','TR4']].mean(axis=1)
-# print(data['Avg_TR'])
-
-# average = data[['AVE']]
-# print(average)
-# stdev = data[['STD_DEV']]
-# print(stdev)
-
-# row_mean_avg = average.mean()
-
-# row_mean_avg = data['Avg_TR'].mean()
-# print(row_mean_avg)
-# row_std_avg = data['Avg_TR'].std(ddof=0)
-# print(row_std_avg)
-# data['Z_Avg_TR'] = (data['Avg_TR'] - row_mean_avg) / row_std_avg
-# print(data['Z_Avg_TR'])
-
-data['Z_Avg_TR'] = (data['TR1'] - data['AVE']) / data['STD_DEV']
-print(data['Z_Avg_TR'])
-
-# # Plot a small summary of per-row max |z| vs MPH and highlight outliers
+# # Plot a small summary of per-row max |z| vs MPH and highlight outliers for Z1
 plt.figure(figsize=(3.5, 2.5))
 plt.plot(data['MPH'], data['INDEX_TR1'], label='INDEX_TR1', linestyle='-', marker='o', markersize=3, linewidth=1)
 plt.plot(data['MPH'], data['INDEX_TR2'], label='INDEX_TR2', linestyle='-', marker='s', markersize=3, linewidth=1)
 plt.plot(data['MPH'], data['INDEX_TR3'], label='INDEX_TR3', linestyle='-', marker='^', markersize=3, linewidth=1)
 plt.plot(data['MPH'], data['INDEX_TR4'], label='INDEX_TR4', linestyle='-', marker='v', markersize=3, linewidth=1)
-plt.plot(data['MPH'], data['Z_Avg_TR'], label='Z_Avg_TR', linestyle='-', marker='o', markersize=3, linewidth=1)
+plt.plot(data['MPH'], data['Z1_Avg_TR'], label='Z1_Avg_TR', linestyle='-', marker='o', markersize=3, linewidth=1)
 plt.legend()
 plt.xlabel('mph (index)' if data.index.dtype.kind in 'fiu' else 'Index')
 plt.ylabel('Value / Z-score (shifted)')
-plt.title('INDEX_TR1-4 and Z_Avg_TR')
+plt.title('INDEX_TR1-4 and z-score for TR1')
 plt.grid(True)
 plt.show()
 
+# Plot a small summary of per-row max |z| vs MPH and highlight outliers for Z2
+plt.figure(figsize=(3.5, 2.5))
+plt.plot(data['MPH'], data['INDEX_TR1'], label='INDEX_TR1', linestyle='-', marker='o', markersize=3, linewidth=1)
+plt.plot(data['MPH'], data['INDEX_TR2'], label='INDEX_TR2', linestyle='-', marker='s', markersize=3, linewidth=1)
+plt.plot(data['MPH'], data['INDEX_TR3'], label='INDEX_TR3', linestyle='-', marker='^', markersize=3, linewidth=1)
+plt.plot(data['MPH'], data['INDEX_TR4'], label='INDEX_TR4', linestyle='-', marker='v', markersize=3, linewidth=1)
+plt.plot(data['MPH'], data['Z2_Avg_TR'], label='Z2_Avg_TR', linestyle='-', marker='s', markersize=3, linewidth=1)
+plt.legend()
+plt.xlabel('mph (index)' if data.index.dtype.kind in 'fiu' else 'Index')
+plt.ylabel('Value / Z-score (shifted)')
+plt.title('INDEX_TR1-4 and z-score for TR2')
+plt.grid(True)
+plt.show()
+
+# Plot a small summary of per-row max |z| vs MPH and highlight outliers for Z3
+plt.figure(figsize=(3.5, 2.5))
+plt.plot(data['MPH'], data['INDEX_TR1'], label='INDEX_TR1', linestyle='-', marker='o', markersize=3, linewidth=1)
+plt.plot(data['MPH'], data['INDEX_TR2'], label='INDEX_TR2', linestyle='-', marker='s', markersize=3, linewidth=1)
+plt.plot(data['MPH'], data['INDEX_TR3'], label='INDEX_TR3', linestyle='-', marker='^', markersize=3, linewidth=1)
+plt.plot(data['MPH'], data['INDEX_TR4'], label='INDEX_TR4', linestyle='-', marker='v', markersize=3, linewidth=1)
+plt.plot(data['MPH'], data['Z3_Avg_TR'], label='Z3_Avg_TR', linestyle='-', marker='^', markersize=3, linewidth=1)
+plt.legend()
+plt.xlabel('mph (index)' if data.index.dtype.kind in 'fiu' else 'Index')
+plt.ylabel('Value / Z-score (shifted)')
+plt.title('INDEX_TR1-4 and z-score for TR3')
+plt.grid(True)
+plt.show()
+
+# Plot a small summary of per-row max |z| vs MPH and highlight outliers for Z4
+plt.figure(figsize=(3.5, 2.5))
+plt.plot(data['MPH'], data['INDEX_TR1'], label='INDEX_TR1', linestyle='-', marker='o', markersize=3, linewidth=1)
+plt.plot(data['MPH'], data['INDEX_TR2'], label='INDEX_TR2', linestyle='-', marker='s', markersize=3, linewidth=1)
+plt.plot(data['MPH'], data['INDEX_TR3'], label='INDEX_TR3', linestyle='-', marker='^', markersize=3, linewidth=1)
+plt.plot(data['MPH'], data['INDEX_TR4'], label='INDEX_TR4', linestyle='-', marker='v', markersize=3, linewidth=1)
+plt.plot(data['MPH'], data['Z4_Avg_TR'], label='Z4_Avg_TR', linestyle='-', marker='v', markersize=3, linewidth=1)
+plt.legend()
+plt.xlabel('mph (index)' if data.index.dtype.kind in 'fiu' else 'Index')
+plt.ylabel('Value / Z-score (shifted)')
+plt.title('INDEX_TR1-4 and z-score for TR4')
+plt.grid(True)
+plt.show()
